@@ -13,9 +13,10 @@ class handler:
             b = dict(request_id = i.num_id,
                      request_name = i.person,
                      request_time = str(i.time),
+                     request_upload_time = str(i.upload_time),
                      request_text = i.notetext,
                      request_status = i.status)
-            new_data.append(b)
+            new_data.insert(0,b)
 
         return new_data
 
@@ -32,7 +33,7 @@ class handler:
                      leave = i.leave,
                      join = i.join,
                      recordtext = i.recordtext)
-            new_data.append(b)
+            new_data.insert(0,b)
 
         return new_data
 
@@ -45,7 +46,7 @@ class handler:
                      time = str(i.time),
                      name = i.person,
                      notice = i.noticetext)
-            new_data.append(b)
+            new_data.insert(0,b)
 
         return new_data
 

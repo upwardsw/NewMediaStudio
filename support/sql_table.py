@@ -8,10 +8,12 @@ Base = declarative_base()
 class leave_note(Base):
     __tablename__ = 'leavenote'
     num_id = Column(Integer,primary_key=True,unique=True)
-    time = Column(Date)
+    write_time = Column(Date)
     person = Column(String(10))
     notetext = Column(String(500))
     status = Column(Integer)
+    check_time = Column(DateTime)
+    upload_time = Column(DateTime)
 
 
 class meetingrecord(Base):

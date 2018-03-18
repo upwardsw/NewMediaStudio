@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import datetime
 
 from flask import Flask, request, Response
 from flask_cors import *
@@ -17,7 +18,8 @@ CORS(app, supports_credentials=True)
 app.config['SECRET_KEY'] = '*8p.3y?1t!h@o#n$8%^5&7*9'
 engine = create_engine(
     'mysql+pymysql://{0}:{1}@{2}/{3}?charset=utf8'.format(appconfig.user, appconfig.password, appconfig.host,
-                                                          appconfig.dbname), encoding="utf-8", echo=True)
+                                                          appconfig.dbname), 
+    pool_recycle = 21600, pool_size = 8, max_overflow = 5, encoding = "utf-8", echo = True)
 DBSession = sessionmaker(bind=engine)
 
 '''
@@ -212,7 +214,7 @@ def request_note():
 
         # 得到数据
         try:
-            post_data = request.get_json()
+            post_data = request.get_data()
             post_data = str(post_data, encoding='utf-8')
 
             post_data = json.loads(post_data)
@@ -222,13 +224,10 @@ def request_note():
         except:
             return Response(response=json.dumps(dict(is_success=False)), mimetype="application/json", status=200)
 
-        # 获取最后一个请假条的数据（用于记录id）
-        all_note = connect.query(leave_note).all()
-        final_note = all_note[-1]
-
         try:
-            new_request = leave_note(num_id=final_note.num_id + 1, person=request_name, time=request_time,
-                                     notetext=request_text, status=0)
+            current_time = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+            new_request = leave_note(person=request_name, write_time=request_time,
+                                     notetext=request_text, status=0, upload_time=current_time)
             connect.add(new_request)
             connect.commit()
         except:
@@ -266,12 +265,13 @@ def show_request_note_admin():
 def check_requexitest_note():
     if request.method == 'POST':
         # 得到json数据
-        post_data = request.get_json()
+        post_data = request.get_data()
         post_data = str(post_data, encoding='utf-8')
-
         post_data = json.loads(post_data)
+
         request_id = post_data.get("request_id")
-        request_opinion = post_data.get("request_opinion")
+
+        current_time = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
         connect = DBSession()
 
@@ -279,7 +279,8 @@ def check_requexitest_note():
         try:
             old_note = connect.query(leave_note).filter(leave_note.num_id == request_id).first()
             # 尝试修改审查状态
-            old_note.status = request_opinion
+            old_note.status = 1
+            old_note.check_time = current_time
             connect.commit()
         except:
             return Response(response=json.dumps(dict(is_success=False)), mimetype="application/json", status=200)
@@ -310,12 +311,8 @@ def add_meeting_notes():
         except:
             return Response(response=json.dumps(dict(is_success=False)), mimetype="application/json", status=200)
 
-        # 获取最后一个会议记录的数据（用于记录id）
-        all_meeting = connect.query(meetingrecord).all()
-        final_meeting = all_meeting[-1]
-
         try:
-            new_request = meetingrecord(id=final_meeting.id + 1, time=request_time, host=request_host,
+            new_request = meetingrecord(time=request_time, host=request_host,
                                         recordperson=request_recordperson, late=request_late, leave=request_leave,
                                         join=request_join, recordtext=request_recordtext)
             connect.add(new_request)
@@ -352,11 +349,7 @@ def add_notice():
             request_name = data.get("name")
             request_notice = data.get("notice")
 
-            # 获取最后一个公告的数据（用于记录id）
-            all_notice = connect.query(notice).all()
-            final_notice = all_notice[-1]
-
-            new_notice = notice(id=final_notice.id + 1, time=request_time, person=request_name,
+            new_notice = notice(time=request_time, person=request_name,
                                 noticetext=request_notice)
             connect.add(new_notice)
             connect.commit()
@@ -364,6 +357,27 @@ def add_notice():
             return Response(response=json.dumps(dict(is_success=False)), mimetype="application/json", status=200)
 
         return Response(response=json.dumps(dict(is_success=True)), mimetype="application/json", status=200)
+
+
+#公告删除
+@app.route('/delete_notice', methods=["POST"])
+def delete_notice():
+    connect = DBSession()
+    try:
+        data = request.get_json()
+        data = str(data, encoding='utf-8')
+        data = json.loads(data)
+
+        request_time = data.get("id")
+
+        request_notice = connect.query(notice).filter(notice.id == id)
+        connect.delete(request_notice)
+        connect.commit()
+    except:
+        return Response(response=json.dumps(dict(is_success=False)), mimetype="application/json", status=200)
+
+    return Response(response=json.dumps(dict(is_success=True)), mimetype="application/json", status=200)
+
 
 
 # 公告查看
