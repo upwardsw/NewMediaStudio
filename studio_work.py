@@ -52,9 +52,9 @@ def load_user(user_id):
 def new_user():
     if request.method == 'POST':
         a = request.get_data()
-        print(a)
-        a = str(a, encoding='utf-8')
-        a = json.loads(a)
+        # print(a)
+        # a = str(a, encoding='utf-8')
+        # a = json.loads(a)
         student_id = a.get('student_id')
         name = a.get('name')
         department = a.get('department')
@@ -90,8 +90,8 @@ def test():
 def login():
     if request.method == 'POST':
         a = request.get_json()
-        a = str(a, encoding='utf-8')
-        a = json.loads(a)
+        # a = str(a, encoding='utf-8')
+        # a = json.loads(a)
         student_id = a.get('student_id')
         password = a.get('password')
 
@@ -128,9 +128,9 @@ def logout():
 def change_password():
     if request.method == 'POST':
         a = request.get_json()
-        a = str(a, encoding='utf-8')
-
-        a = json.loads(a)
+        # a = str(a, encoding='utf-8')
+        #
+        # a = json.loads(a)
         student_id = a.get('student_id')
         name = a.get('name')
         tel = a.get('tel')
@@ -158,9 +158,9 @@ def change_password():
 def forget_password():
     if request.method == 'POST':
         a = request.get_json()
-        a = str(a, encoding='utf-8')
-
-        a = json.loads(a)
+        # a = str(a, encoding='utf-8')
+        #
+        # a = json.loads(a)
         student_id = a.get('student_id')
         name = a.get('name')
         tel = a.get('tel')
@@ -215,9 +215,9 @@ def request_note():
         # 得到数据
         try:
             post_data = request.get_data()
-            post_data = str(post_data, encoding='utf-8')
-
-            post_data = json.loads(post_data)
+            # post_data = str(post_data, encoding='utf-8')
+            #
+            # post_data = json.loads(post_data)
             request_name = post_data.get('request_name')
             request_time = post_data.get('request_time')
             request_text = post_data.get('request_text')
@@ -266,8 +266,8 @@ def check_requexitest_note():
     if request.method == 'POST':
         # 得到json数据
         post_data = request.get_data()
-        post_data = str(post_data, encoding='utf-8')
-        post_data = json.loads(post_data)
+        # post_data = str(post_data, encoding='utf-8')
+        # post_data = json.loads(post_data)
 
         request_id = post_data.get("request_id")
 
@@ -298,8 +298,8 @@ def add_meeting_notes():
         try:
             post_data = request.get_json()
 
-            post_data = str(post_data, encoding='utf-8')
-            post_data = json.loads(post_data)
+            # post_data = str(post_data, encoding='utf-8')
+            # post_data = json.loads(post_data)
             request_time = post_data.get('time')
 
             request_host = post_data.get('host')
@@ -342,8 +342,8 @@ def add_notice():
 
         try:
             data = request.get_json()
-            data = str(data, encoding='utf-8')
-            data = json.loads(data)
+            # data = str(data, encoding='utf-8')
+            # data = json.loads(data)
 
             request_time = data.get("time")
             request_name = data.get("name")
@@ -365,8 +365,8 @@ def delete_notice():
     connect = DBSession()
     try:
         data = request.get_json()
-        data = str(data, encoding='utf-8')
-        data = json.loads(data)
+        # data = str(data, encoding='utf-8')
+        # data = json.loads(data)
 
         request_time = data.get("id")
 
@@ -457,8 +457,8 @@ def change_student_base_info():
     try:
         student_id = current_user.id
         datas = request.get_data()
-        data = str(datas, encoding='utf-8')
-        datas = json.loads(datas)
+        # data = str(datas, encoding='utf-8')
+        # datas = json.loads(datas)
         connect = DBSession()
         detailinfos = connect.query(detailinfo).filter(detailinfo.id == student_id).first()
         datas = standard.change_detailinfo(detailinfos, datas)
@@ -480,8 +480,8 @@ def change_student_free_time():
     if student_id == None:
         return Response(response=json.dumps({"is_success": False}), mimetype="application/json", status=200)
     data = request.get_data()
-    data = str(data, encoding='utf-8')
-    datas = json.loads(data)
+    # data = str(data, encoding='utf-8')
+    # datas = json.loads(data)
     connect = DBSession()
     new_freetime = [student_id]
     new_freetime.extend(data["freetime"])
