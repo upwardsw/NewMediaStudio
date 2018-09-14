@@ -22,10 +22,7 @@ engine = create_engine(
     pool_recycle = 21600, pool_size = 8, max_overflow = 5, encoding = "utf-8", echo = True)
 DBSession = sessionmaker(bind=engine)
 
-'''
-李盼盼部分：
 
-'''
 # login模块设置：
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -181,29 +178,6 @@ def forget_password():
             return Response(response=json.dumps(dict(is_success=False)), mimetype='application/json', status=200)
 
 
-'''
-石立军部分：
-请假条填写（部员）
-request_nrnote[post](json:request_name,request_time,request_text)[retu](json:is_success)
-
-请假条查看（管理员查看并且审核，部员审核状态）
-show_request_note[post](json:)[return](json:list[json:request_id,request_name,request_time,request_text,request_status]
-show_request_note_admin[post](json:)[return](json:list[json:request_id,request_name,request_time,request_text,request_status])
-check_request_note[post](json:request_id,request_opinion)[return](json:is_success)
-
-会议记录填写（管理员权限）
-add_meeting_notes[post](json:time,host,recordperson,late,leave,join, recordtext)[return](json:is_success)
-
-会议记录查看（部员）
-show_meeting_notes[post](json:)[return](json:list[id,time,host,recordperson,late,leave,join, recordtext])
-
-公告发布（管理员）
-add_notice[post](json:name,time,notice)[return](json:is_success)
-
-公告查看（全部公告，管理员公告）
-show_notice[post](json:)[return](json:list[id,time,name,notice])
-show_my_notice[post](json:)[return](json: list[id,time,name,notice])
-'''
 
 
 # 请假条填写（部员）
@@ -406,24 +380,6 @@ def show_my_notice():
         return Response(response=json.dumps(data), mimetype="application/json", status=200)
 
 
-'''
-刘臻部分：
-####show_student_info：
-return json:student_id,name,department,student_class,school,position,sex,email,tel,qq,picture_id,native_place，free_time(list),is_success
-
-####change_student_base_info：
-post json:student_class,school,tel,qq,email,native_place
-return json:is_success
-
-####change_student_free_time：
-post json:freetime:(list)
-return json:is_success
-
-####change_student_picture：
-post"file":图片
-return json:is_success
-'''
-
 
 # 学生信息显示
 # print(os.path.dirname(os.path.abspath(__file__))+'\\templates\photo\\')
@@ -500,13 +456,9 @@ def change_student_free_time():
     return Response(response=json.dumps({"is_success": True}), mimetype="application/json", status=200)
 
 
-# <div class="col-md-4">
-#     <form action="" method=post enctype=multipart/form-data>
-#         <input type=file name=file><br/>
-#         <input type=submit value=Upload>
-#     </form>
-# </div>
-# 获取图片的前段方式，写不来路由
+
+
+# 获取图片
 @app.route('/change_student_picture/', methods=['POST'])
 def change_student_picture():
     # post"file":图片
